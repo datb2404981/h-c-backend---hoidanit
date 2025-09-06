@@ -1,38 +1,42 @@
 import express, { Express } from "express";
-import { getHomePage } from "controllers/client/user";
-import { getCreateUserPage, postCreateUserPage, postDeleteUserPage, } from "controllers/createUserController";
+import { getHomePage,getLoginPage,getSignupPage } from "controllers/client/user";
+import { getCreateUserPage, postCreateUserPage, postDeleteUserPage, } from "controllers/admin/adminCreateUser";
 import { getEditUsers,postUpdateUser } from "controllers/admin/adminUser";
-import { getUsers } from "controllers/usersController";
 import { getAdmin, getUser, getProduct, getOrder } from "controllers/admin/admin";
 import multer from "multer";
 import fileUploadMiddleware from "middleware/multer";
 import { getProductPage } from "controllers/client/clientProduct";
-import { getAdminCreateProductPage } from "controllers/admin/adminProduct";
+import {
+  getAdminCreateProductPage, postAdminCreateProductPage,
+  getEditProducts, postUpdateProduct,postDeleteProductPage
+} from "controllers/admin/adminProduct";
+import { postSignupPage } from "controllers/client/clientAuth";
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' })
 
 const WebRouters = (app : Express) => {
 
-  router.get('/users', getUsers);
 
   // Admin 
   router.get('/admin/dashboard', getAdmin);
   
   //Admin/user
-  router.get('/admin/user', getUser);
   router.get('/admin/create', getCreateUserPage);
-  router.post('/admin/create', postCreateUserPage);
-  router.post('/admin/create', fileUploadMiddleware('avatar'), postCreateUserPage);
+  router.post('/admin/create', fileUploadMiddleware('avatar',"images/client"), postCreateUserPage);
   router.post('/admin/deleteUser/:id', postDeleteUserPage );
   router.get('/admin/editUser/:id', getEditUsers);
-  router.post('/admin/updateUser', fileUploadMiddleware('avatar'), postUpdateUser);
+  router.post('/admin/updateUser', fileUploadMiddleware('avatar',"images/client"), postUpdateUser);
+  router.get('/admin/user', getUser);
   
   //Admin/product
   router.get('/admin/product/create', getAdminCreateProductPage); // Controller does not exist
-  router.post('/admin/product/create', fileUploadMiddleware('image', "images/product"), postCreateUserPage); // Wrong controller
+  router.post('/admin/product/create', fileUploadMiddleware('image', "images/product"), postAdminCreateProductPage); // Wrong controller
+  router.get('/admin/product/editProduct/:id', getEditProducts);
+  router.post('/admin/product/updateProduct', fileUploadMiddleware('image', "images/product"), postUpdateProduct);
+  router.post('/admin/product/deleteProduct/:id', postDeleteProductPage );
   router.get('/admin/product', getProduct);
-  
+
   //Admin/order
   router.get('/admin/order', getOrder);
   
@@ -40,7 +44,11 @@ const WebRouters = (app : Express) => {
   router.get('/admin', getAdmin);
 
   // Client 
+  router.get('/login', getLoginPage);
+  router.get('/signup', getSignupPage);
+  router.post('/signup', postSignupPage);
   router.get('/', getHomePage);
+
 
   //Product
   router.get('/product/:id', getProductPage);

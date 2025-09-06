@@ -4,7 +4,7 @@ import WebRouters from "./routers/web";
 import * as path from "path";
 import expressLayouts from 'express-ejs-layouts';
 import mysql from 'mysql2/promise';
-import  {initDatabase } from "config/seed";
+import  initDatabase  from "config/seed";
 
 import { getConnection } from "config/database";
 
@@ -41,6 +41,7 @@ WebRouters(app);
   
 //seeding data
 //initDatabase();
+
 
 app.listen(port, () => {
   console.log(`My server is http://localhost:${port}`);
